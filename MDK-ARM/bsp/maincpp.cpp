@@ -69,7 +69,7 @@ void main_cpp(void)
   stepmotor_list_ptr[1] = new StepMotorZDT_t(1, &huart3, false, 1);
   stepmotor_list_ptr[2] = new StepMotorZDT_t(3, &huart3, false, 0);
   stepmotor_list_ptr[3] = new StepMotorZDT_t(4, &huart3, true, 1);
-  KinematicOdom = KinematicOdom_t(0.22);
+  KinematicOdom = KinematicOdom_t(0.17);
   // 需要用reinterpret_cast转换到父类指针类型
   Controller = StepController_t(stepmotor_list_ptr);
   //上位机控制
@@ -87,6 +87,7 @@ void main_cpp(void)
   //   if (ok != pdPASS || ok2 != pdPASS || ok3 != pdPASS || ok4 != pdPASS)
   if (ok2 != pdPASS || ok3 != pdPASS || ok4 != pdPASS)
   {
+		
     // 任务创建失败，进入死循环
     while (1)
     {
@@ -100,12 +101,56 @@ void Onmaincpp(void *pvParameters)
   UNUSED(pvParameters);
 	vTaskDelay(1000);
 	ch040.setYawZero();
- auto& result=Controller.SetClosePosition({4, 0, 0});
+
+ auto& result=Controller.SetClosePosition({0.2, 0, 0});//4.45
    while(!result.isResolved())
  {
 
     vTaskDelay(10);
   }
+ //原地转弯
+result=Controller.SetClosePosition({0.2, 0,1.7});//4.45
+   while(!result.isResolved())
+{
+vTaskDelay(10);
+}
+vTaskDelay(100);
+////清空里程计
+ch040.setYawZero();
+Controller.Clear();
+
+//走到左边道
+ result=Controller.SetClosePosition({0.5, 0, 0});
+   while(!result.isResolved())
+{
+vTaskDelay(10);
+}
+//Controller.Clear();
+//ch040.setYawZero();
+////旋转一个
+ result=Controller.SetClosePosition({0.5, 0, 1.7});
+   while(!result.isResolved())
+{
+vTaskDelay(10);
+}
+vTaskDelay(100);
+//////清空里程计
+ch040.setYawZero();
+Controller.Clear();
+
+
+
+////回家
+  result=Controller.SetClosePosition({4.8, 0,  0});
+    while(!result.isResolved())
+    {
+      vTaskDelay(10);
+    }
+	
+	
+
+
+
   while (1)
   {
 
