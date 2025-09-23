@@ -34,8 +34,8 @@ TaskHandle_t main_cpp_handle;        // 主函数
 TaskHandle_t Planner_update_handle;  // 轨迹规划
 USARTInstance StepMotorUart;         // 步进电机串口实例
 USARTInstance ch040Uart;             // ch040串口实例
-//TaskHandle_t Ontest_handle;
-//void ontest(void *pvParameters);
+TaskHandle_t Ontest_handle;
+void ontest(void *pvParameters);
 void OnChassicControl(void *pvParameters);
 void OnKinematicUpdate(void *pvParameters);
 void Onmaincpp(void *pvParameters);
@@ -69,7 +69,7 @@ void main_cpp(void)
   stepmotor_list_ptr[1] = new StepMotorZDT_t(1, &huart3, false, 1);
   stepmotor_list_ptr[2] = new StepMotorZDT_t(3, &huart3, false, 0);
   stepmotor_list_ptr[3] = new StepMotorZDT_t(4, &huart3, true, 1);
-  KinematicOdom = KinematicOdom_t(0.17);
+  KinematicOdom = KinematicOdom_t(0.17,class_t::Rub_shape); // 初始化运动学模型
   // 需要用reinterpret_cast转换到父类指针类型
   Controller = StepController_t(stepmotor_list_ptr);
   //上位机控制
@@ -82,8 +82,8 @@ void main_cpp(void)
       xTaskCreate(Onmaincpp, "main_cpp", 600, NULL, 4, &main_cpp_handle);
   BaseType_t ok4 = xTaskCreate(OnPlannerUpdate, "Planner_update", 1000, NULL, 4,
                                &Planner_update_handle);
-//		 BaseType_t ok5 = xTaskCreate(ontest, "ontest_work", 200, NULL, 2,
-//                               &Ontest_handle);													 
+		 BaseType_t ok5 = xTaskCreate(ontest, "ontest_work", 200, NULL, 2,
+                               &Ontest_handle);													 
   //   if (ok != pdPASS || ok2 != pdPASS || ok3 != pdPASS || ok4 != pdPASS)
   if (ok2 != pdPASS || ok3 != pdPASS || ok4 != pdPASS)
   {
@@ -108,13 +108,15 @@ void Onmaincpp(void *pvParameters)
 
     vTaskDelay(10);
   }
- //原地转弯
+// //原地转弯
 result=Controller.SetClosePosition({0.2, 0,1.7});//4.45
    while(!result.isResolved())
 {
 vTaskDelay(10);
 }
 vTaskDelay(100);
+
+
 ////清空里程计
 ch040.setYawZero();
 Controller.Clear();
@@ -126,7 +128,8 @@ Controller.Clear();
 vTaskDelay(10);
 }
 //Controller.Clear();
-//ch040.setYawZero();
+ch040.setYawZero();
+vTaskDelay(100);
 ////旋转一个
  result=Controller.SetClosePosition({0.5, 0, 1.7});
    while(!result.isResolved())
@@ -137,11 +140,9 @@ vTaskDelay(100);
 //////清空里程计
 ch040.setYawZero();
 Controller.Clear();
-
-
-
+vTaskDelay(500);
 ////回家
-  result=Controller.SetClosePosition({4.8, 0,  0});
+  result=Controller.SetClosePosition({0.2, 0,  0});
     while(!result.isResolved())
     {
       vTaskDelay(10);
@@ -158,15 +159,15 @@ Controller.Clear();
   }
 }
 
-//void ontest(void *pvParameters)
-//{
-//  UNUSED(pvParameters);
-//  while (1)
-//  {
+void ontest(void *pvParameters)
+{
+  UNUSED(pvParameters);
+  while (1)
+  {
 //    Controller.SetVelTarget({DEBUG1, DEBUG2, DEBUG3});
-//    vTaskDelay(500);
-//  }
-//}
+    vTaskDelay(1000);
+  }
+}
 
 void OnPlannerUpdate(void *pvParameters)
 {

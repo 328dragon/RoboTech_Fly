@@ -66,7 +66,7 @@ void KinematicOdom_t::Inv(cmd_vel_t const &cmd_vel_in, float *speed_control)
     // 左上 (0) 轮：受 linear_x,angular_z 的影响
     speed_control[0] = cmd_vel_in.linear_x - cmd_vel_in.angular_z * _aAddb;
     // 右上 (1) 轮：受 linear_y,angular_z 的影响
-    speed_control[1] = cmd_vel_in.linear_y + cmd_vel_in.angular_z * _aAddb;
+    speed_control[1] = cmd_vel_in.linear_x+ cmd_vel_in.angular_z * _aAddb;
     // 左下 (2) 轮：与左上轮相同
     speed_control[2] = speed_control[0];
     // 右下 (3) 轮：与右上轮相同
@@ -107,13 +107,23 @@ void KinematicOdom_t::Forward(cmd_vel_t &cmd_vel_in, float *current_speed)
 {
   float v0 = current_speed[0]; // 左上轮子速度
   float v1 = current_speed[1]; // 右上轮子速度
-  float v2 = current_speed[2]; // 左下轮子速度
+  float v2 = current_speed[2]; // 左下轮子·速度
   float v3 = current_speed[3]; // 右下轮子速度
-
+if(class_t::Rub_shape==diclass)
+{
   // 修正后的正解算公式
   cmd_vel_in.linear_x = (v0 + v1 + v2 + v3) / 4.0;                // X轴方向速度
   cmd_vel_in.linear_y = (-v0 + v1 + v2 - v3) / 4.0;               // Y轴方向速度
   cmd_vel_in.angular_z = (-v0 + v1 - v2 + v3) / (4.0 * (_aAddb)); // 角速度
+
+}
+else if (class_t::X_shape==diclass)
+{
+  // 修正后的正解算公式
+  cmd_vel_in.linear_x = (v0 + v1 ) / 2.0;                // X轴方向速度
+  cmd_vel_in.angular_z = (v1-v0) / (2.0 * (_aAddb)); // 角速度
+}
+
 }
 
 /**
