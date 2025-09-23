@@ -69,7 +69,7 @@ void main_cpp(void)
   stepmotor_list_ptr[1] = new StepMotorZDT_t(1, &huart3, false, 1);
   stepmotor_list_ptr[2] = new StepMotorZDT_t(3, &huart3, false, 0);
   stepmotor_list_ptr[3] = new StepMotorZDT_t(4, &huart3, true, 1);
-  KinematicOdom = KinematicOdom_t(0.17,class_t::Rub_shape); // 初始化运动学模型
+  KinematicOdom = KinematicOdom_t(0.15,class_t::Rub_shape); // 初始化运动学模型
   // 需要用reinterpret_cast转换到父类指针类型
   Controller = StepController_t(stepmotor_list_ptr);
   //上位机控制
@@ -99,27 +99,29 @@ void main_cpp(void)
 void Onmaincpp(void *pvParameters)
 {
   UNUSED(pvParameters);
-	vTaskDelay(1000);
+	vTaskDelay(6000);
 	ch040.setYawZero();
 
- auto& result=Controller.SetClosePosition({1, 0, 0});//4.45
+   auto& result=Planner.LoactaionCloseControl({4.45,0,0},3.5,6);//4.45
    while(!result.isResolved())
  {
 
     vTaskDelay(10);
   }
 // //原地转弯
-result=Controller.SetClosePosition({1, 0,1.7});//4.45
+
+result=Planner.LoactaionCloseControl({4.45,0,PI/2},3.5,6);//4.45
    while(!result.isResolved())
 {
 vTaskDelay(10);
 }
+
 vTaskDelay(100);
-
 Controller.Clear();
-
+vTaskDelay(100);
 ////走到左边道
- result=Controller.SetClosePosition({0.5, 0, 0});
+
+result=Planner.LoactaionCloseControl({0.5,0,0},3.5,6);
    while(!result.isResolved())
 {
 vTaskDelay(10);
@@ -127,7 +129,8 @@ vTaskDelay(10);
 // Controller.Clear();
 //vTaskDelay(100);
 //////旋转一个
- result=Controller.SetClosePosition({0.5, 0, 1.7});
+
+result=Planner.LoactaionCloseControl({0.5,0,PI/2-0.1},3.5,6);
    while(!result.isResolved())
 {
 vTaskDelay(10);
@@ -135,9 +138,10 @@ vTaskDelay(10);
 vTaskDelay(100);
 ////////清空里程计
 Controller.Clear();
-//vTaskDelay(100);
+vTaskDelay(100);
 //////回家
-  result=Controller.SetClosePosition({1, 0,  0});//4.45
+
+  result=Planner.LoactaionCloseControl({4.47,0,0},3.5,4);//4.45
     while(!result.isResolved())
     {
       vTaskDelay(10);
