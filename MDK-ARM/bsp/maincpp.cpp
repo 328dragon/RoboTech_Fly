@@ -79,7 +79,7 @@ void main_cpp(void)
   BaseType_t ok2 = xTaskCreate(OnChassicControl, "Chassic_control", 600, NULL,
                                3, &Chassic_control_handle);
   BaseType_t ok3 =
-      xTaskCreate(Onmaincpp, "main_cpp", 600, NULL, 4, &main_cpp_handle);
+      xTaskCreate(Onmaincpp, "main_cpp", 800, NULL, 4, &main_cpp_handle);
   BaseType_t ok4 = xTaskCreate(OnPlannerUpdate, "Planner_update", 1000, NULL, 4,
                                &Planner_update_handle);
 		 BaseType_t ok5 = xTaskCreate(ontest, "ontest_work", 200, NULL, 2,
@@ -102,53 +102,48 @@ void Onmaincpp(void *pvParameters)
 	vTaskDelay(1000);
 	ch040.setYawZero();
 
- auto& result=Controller.SetClosePosition({0.2, 0, 0});//4.45
+ auto& result=Controller.SetClosePosition({1, 0, 0});//4.45
    while(!result.isResolved())
  {
 
     vTaskDelay(10);
   }
 // //原地转弯
-result=Controller.SetClosePosition({0.2, 0,1.7});//4.45
+result=Controller.SetClosePosition({1, 0,1.7});//4.45
    while(!result.isResolved())
 {
 vTaskDelay(10);
 }
 vTaskDelay(100);
 
-
-////清空里程计
-ch040.setYawZero();
 Controller.Clear();
 
-//走到左边道
+////走到左边道
  result=Controller.SetClosePosition({0.5, 0, 0});
    while(!result.isResolved())
 {
 vTaskDelay(10);
 }
-//Controller.Clear();
-ch040.setYawZero();
-vTaskDelay(100);
-////旋转一个
+// Controller.Clear();
+//vTaskDelay(100);
+//////旋转一个
  result=Controller.SetClosePosition({0.5, 0, 1.7});
    while(!result.isResolved())
 {
 vTaskDelay(10);
 }
 vTaskDelay(100);
-//////清空里程计
-ch040.setYawZero();
+////////清空里程计
 Controller.Clear();
-vTaskDelay(500);
-////回家
-  result=Controller.SetClosePosition({0.2, 0,  0});
+//vTaskDelay(100);
+//////回家
+  result=Controller.SetClosePosition({1, 0,  0});//4.45
     while(!result.isResolved())
     {
       vTaskDelay(10);
     }
-	
-	
+//	
+//	
 
 
 
