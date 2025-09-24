@@ -80,8 +80,8 @@ SimpleStatus_t &Planner_t::LoactaionCloseControl(const odom_t &target_odom, floa
     const float dis = Sqrt(odom_diff.x * odom_diff.x + odom_diff.y * odom_diff.y);
     const float x_scale=odom_diff.x / dis ;
     const float y_scale=odom_diff.y / dis ;
-    _trapezoidal_spline[0] = TrapezoidalSpline(current_odom.x, target_odom.x,max_linear*x_scale, _max_linear_acc*x_scale);
-    _trapezoidal_spline[1] = TrapezoidalSpline(current_odom.y, target_odom.y,max_linear*y_scale, _max_linear_acc*y_scale);
+    _trapezoidal_spline[0] = TrapezoidalSpline(current_odom.x, target_odom.x,max_linear*x_scale, _max_linear_acc*x_scale, _max_linear_dec*x_scale);
+    _trapezoidal_spline[1] = TrapezoidalSpline(current_odom.y, target_odom.y,max_linear*y_scale, _max_linear_acc*y_scale, _max_linear_dec*y_scale);
     //单独对yaw 做处理,扩展到-PI到PI之外
     const float yaw_diff = target_odom.yaw - current_odom.yaw;
     float yaw_target_optimize;
@@ -94,7 +94,7 @@ SimpleStatus_t &Planner_t::LoactaionCloseControl(const odom_t &target_odom, floa
     else {
         yaw_target_optimize = target_odom.yaw;
     }
-    _trapezoidal_spline[2] = TrapezoidalSpline(current_odom.yaw, yaw_target_optimize, max_angular, _max_angular_acc);
+    _trapezoidal_spline[2] = TrapezoidalSpline(current_odom.yaw, yaw_target_optimize, max_angular, _max_angular_acc, _max_angular_acc);
     // 重置时间
     _current_t = 0;
     _target_t=fmax(_trapezoidal_spline[0].max_t(), _trapezoidal_spline[1].max_t());

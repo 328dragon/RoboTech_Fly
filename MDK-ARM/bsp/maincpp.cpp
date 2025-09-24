@@ -102,53 +102,18 @@ void Onmaincpp(void *pvParameters)
 	vTaskDelay(6000);
 	ch040.setYawZero();
 
-   auto& result=Planner.LoactaionCloseControl({4.45,0,0},5,6);//4.45
+   auto& result=Planner.LoactaionCloseControl({1,0,0},4,6);//4.45
    while(!result.isResolved())
  {
 
     vTaskDelay(10);
   }
-// //原地转弯
-
-result=Planner.LoactaionCloseControl({4.45,0,PI/2},5,6);//4.45
+result=Planner.LoactaionCloseControl({0,0,0},4,6);//4.45
    while(!result.isResolved())
-{
-vTaskDelay(10);
-}
+ {
 
-vTaskDelay(100);
-Controller.Clear();
-vTaskDelay(100);
-////走到左边道
-
-result=Planner.LoactaionCloseControl({0.5,0,0},5,6);
-   while(!result.isResolved())
-{
-vTaskDelay(10);
-}
-// Controller.Clear();
-//vTaskDelay(100);
-//////旋转一个
-
-result=Planner.LoactaionCloseControl({0.5,0,PI/2-0.1},5,6);
-   while(!result.isResolved())
-{
-vTaskDelay(10);
-}
-vTaskDelay(100);
-////////清空里程计
-Controller.Clear();
-vTaskDelay(100);
-//////回家
-
-  result=Planner.LoactaionCloseControl({4.48,0,0},5,6);//4.45
-    while(!result.isResolved())
-    {
-      vTaskDelay(10);
-    }
-//	
-//	
-
+    vTaskDelay(10);
+  }
 
 
   while (1)
