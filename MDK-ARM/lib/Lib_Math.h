@@ -160,12 +160,12 @@ class TrapezoidalSpline
         float d_a = 0.5f * (this->v_max * this->v_max) /abs(this->a_max);
         float d_d = 0.5f * (this->v_max * this->v_max) /abs(this->d_max);
         // 判断是三角形轨迹还是梯形轨迹
-        if (abs(dx) > 2.0f * d_a) {
+        if (abs(dx) >  d_a+d_d) {
             // 梯形轨迹：包含匀速段
             is_trapezoidal = true;
             t_accel = this->v_max /abs(this->a_max);
             t_decel = this->v_max /abs(this->d_max);
-            float d_u =abs(dx) - 2.0f * d_a;
+            float d_u =abs(dx) - d_a-d_d;
             t_coast = d_u / this->v_max;
             
         } 
@@ -180,6 +180,7 @@ class TrapezoidalSpline
             t_coast = 0.0f; 
             this->v_max =
                abs(this->a_max) * t_accel * direction; // 更新实际达到的最大速度
+          
         }
 
         // 计算运动总时间
@@ -276,11 +277,13 @@ class TrapezoidalSpline
         } 
         else 
         {
+            //匀加速、匀速阶段结束位置
             float x_coast_end =
                 x0 + 0.5f * a_max * std::pow(t_accel, 2) + a_max * (t_accel)*t_coast;
             float v_coast = a_max * (t_accel);
+
             return x_coast_end + v_coast * (t - (t_accel + t_coast)) -
-                    0.5f * a_max * std::pow(t - (t_accel + t_coast), 2);
+                    0.5f * d_max * std::pow(t - (t_accel + t_coast), 2);
         }
     }
 
@@ -301,7 +304,7 @@ class TrapezoidalSpline
         else 
         {
             float v_coast = a_max * t_accel;
-            return v_coast - a_max * (t - (t_accel + t_coast));
+            return v_coast - d_max * (t - (t_accel + t_coast));
         }
     }
 
@@ -317,7 +320,7 @@ class TrapezoidalSpline
         } 
         else if (t > t_accel + t_coast && t <= t_end) 
         {
-            return -a_max;
+            return -d_max;
         } 
         else 
         {
