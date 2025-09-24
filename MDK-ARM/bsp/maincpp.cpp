@@ -102,13 +102,13 @@ void Onmaincpp(void *pvParameters)
 	vTaskDelay(4000);
 	ch040.setYawZero();
 
-   auto& result=Planner.LoactaionCloseControl({4.45,0,0},6.5,6);//4.45
+   auto& result=Planner.LoactaionCloseControl({4.45,0,0},8,6);//4.45
    while(!result.isResolved())
  {
 
     vTaskDelay(10);
   }
-result=Planner.LoactaionCloseControl({0,0,0},6.5,6);//4.45
+result=Planner.LoactaionCloseControl({0,0,0.05},8,6);//4.45
    while(!result.isResolved())
  {
 
