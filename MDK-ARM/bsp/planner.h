@@ -30,7 +30,7 @@ private:
     odom_t _target_odom;
     CubicSpline _spline[3];
     float _max_linear_acc = 6.0f; // 最大线加速度
-    float _max_linear_dec = 1.5f; // 最大线减速度
+    float _max_linear_dec = 1.0f; // 最大线减速度
     float _max_angular_acc =10.0f; // 最大角加速度
     TrapezoidalSpline _trapezoidal_spline[3]; // 三个方向的梯形加减速插值
     SimpleStatus_t _promise = SimpleStatus_t();

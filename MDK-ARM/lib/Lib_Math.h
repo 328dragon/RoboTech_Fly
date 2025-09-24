@@ -175,12 +175,17 @@ class TrapezoidalSpline
             is_trapezoidal = false;
             // t_accel = std::sqrt(abs(dx) /abs(this->a_max));
             // t_decel = std::sqrt(abs(dx) /abs(this->d_max));
-           t_accel = this->v_max /abs(this->a_max);
-           t_decel = this->v_max /abs(this->d_max);
-            t_coast = 0.0f; 
-            this->v_max =
-               abs(this->a_max) * t_accel * direction; // 更新实际达到的最大速度
-          
+                 float v_actual_max=Sqrt( (2*abs(dx)*abs(this->a_max)*abs(this->d_max)) / (abs(this->a_max)+abs(this->d_max)) );
+            this->v_max = v_actual_max*direction;
+            t_accel = v_actual_max/abs(this->a_max);
+            t_decel = v_actual_max/abs(this->d_max);\
+               t_coast = 0.0f; 
+        //    t_accel = this->v_max /abs(this->a_max);
+        //    t_decel = this->v_max /abs(this->d_max);
+        
+            // this->v_max =
+            //    abs(this->a_max) * t_accel * direction; // 更新实际达到的最大速度
+       
         }
 
         // 计算运动总时间
