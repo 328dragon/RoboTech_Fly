@@ -24,11 +24,15 @@
 #include "task.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "maincpp.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN TD */
-
+static int stop_state=0;
+static int stop_count=0;
+static int last_stop_count=0;
+extern __IO int stop_all_flag;
 /* USER CODE END TD */
 
 /* Private define ------------------------------------------------------------*/
@@ -186,6 +190,33 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32f4xx.s).                    */
 /******************************************************************************/
+
+/**
+  * @brief This function handles EXTI line0 interrupt.
+  */
+void EXTI0_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI0_IRQn 0 */
+	//上升沿
+if(stop_state==0&&stop_count==0)
+{
+	stop_state=1;
+	stop_count=1; 
+}
+//下降沿
+else if(stop_state==1&&stop_count==1)
+{
+stop_all_flag=1;
+		stop_state=0;
+	stop_count=1; 
+}
+
+  /* USER CODE END EXTI0_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_0);
+  /* USER CODE BEGIN EXTI0_IRQn 1 */
+
+  /* USER CODE END EXTI0_IRQn 1 */
+}
 
 /**
   * @brief This function handles DMA1 stream1 global interrupt.

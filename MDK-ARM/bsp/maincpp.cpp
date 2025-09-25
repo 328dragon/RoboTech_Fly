@@ -27,6 +27,7 @@
 float DEBUG1 = 0.0f;
 float DEBUG2 = 0.0f;
 float DEBUG3 = 0.0f;
+__IO int stop_all_flag=0;
 // 实例化Map并将初始点设置成startInfo
 StepMotorZDT_t *stepmotor_list_ptr[4];
 TaskHandle_t Chassic_control_handle; // 底盘更新
@@ -99,16 +100,16 @@ void main_cpp(void)
 void Onmaincpp(void *pvParameters)
 {
   UNUSED(pvParameters);
-	vTaskDelay(4000);
+	vTaskDelay(1000);
 	ch040.setYawZero();
 
-   auto& result=Planner.LoactaionCloseControl({4.45,0,0},8,6);//4.45
+   auto& result=Planner.LoactaionCloseControl({4.45,0,0},7,4);//4.45
    while(!result.isResolved())
  {
 
     vTaskDelay(10);
   }
-result=Planner.LoactaionCloseControl({0,0,0.05},8,6);//4.45
+result=Planner.LoactaionCloseControl({-0.1,0,0.05},7.5,4);//4.45
    while(!result.isResolved())
  {
 
@@ -128,8 +129,12 @@ void ontest(void *pvParameters)
   UNUSED(pvParameters);
   while (1)
   {
+//		if(stop_all_flag==1)
+//		{
+//		 Controller.SetVelTarget({0, 0, 0});
+//		}
 //    Controller.SetVelTarget({DEBUG1, DEBUG2, DEBUG3});
-    vTaskDelay(1000);
+    vTaskDelay(2);
   }
 }
 
