@@ -20,7 +20,7 @@ public:
         _spline[2] = CubicSpline();
     }
     SimpleStatus_t &LoactaionOpenControl(const odom_t &target_odom, float max_v, const cmd_vel_t &target_vel = {0, 0, 0}, bool clearodom = false);
-    SimpleStatus_t &LoactaionCloseControl(const odom_t &target_odom, float max_linear, float max_angular, const odom_t &target_error = {0.1, 0.2, 0.1}, bool clearodom = false);
+    SimpleStatus_t &LoactaionCloseControl(const odom_t &target_odom, float max_linear, float max_angular, const odom_t &target_error = {0.1, 0.4, 0.1}, bool clearodom = false);
     void update(uint16_t dt);
     void Clear();
 private:

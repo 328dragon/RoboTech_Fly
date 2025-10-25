@@ -100,16 +100,20 @@ void main_cpp(void)
 void Onmaincpp(void *pvParameters)
 {
   UNUSED(pvParameters);
-	vTaskDelay(5000);
+	
+	vTaskDelay(1000);
+	while(HAL_GPIO_ReadPin(start_GPIO_Port,start_Pin)!=GPIO_PIN_RESET)
+  {
+    vTaskDelay(10);
+  }
 	ch040.setYawZero();
-
-   auto& result=Planner.LoactaionCloseControl({4.45,0,0},4.5,4);//4.45
-   while(!result.isResolved())
- {
+  auto& result=Planner.LoactaionCloseControl({4.45,0,0},4.5,1.0);//4.45
+  while(!result.isResolved())
+  {
 
     vTaskDelay(10);
   }
-result=Planner.LoactaionCloseControl({-0.1,0,0.03},4.5,4);//4.45
+result=Planner.LoactaionCloseControl({-0.1,0,0.03},4.5,1.0);//4.45
    while(!result.isResolved())
  {
 
