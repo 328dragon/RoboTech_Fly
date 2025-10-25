@@ -106,20 +106,20 @@ void Onmaincpp(void *pvParameters)
   {
     vTaskDelay(10);
   }
-	ch040.setYawZero();
-  auto& result=Planner.LoactaionCloseControl({4.45,0,0},4.5,1.0);//4.45
+	 KinematicOdom.UpdateOdom({0.0,0.0,0.0});
+  auto& result=Planner.LoactaionCloseControl({4.40,0.0,0.0},4.5,0.05);//4.45
   while(!result.isResolved())
   {
 
     vTaskDelay(10);
   }
-result=Planner.LoactaionCloseControl({-0.1,0,0.03},4.5,1.0);//4.45
+result=Planner.LoactaionCloseControl({-0.7,0,0.05},3.5,1.0);//4.45
    while(!result.isResolved())
  {
 
     vTaskDelay(10);
   }
-
+	Controller.SetVelTarget({0.0,0.0,0.0});
 
   while (1)
   {

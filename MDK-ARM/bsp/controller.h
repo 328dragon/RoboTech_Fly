@@ -69,7 +69,7 @@ private:
     bool _is_odom_update = false; // 是否更新了里程计
     pid_Increment_template_t<float, float> pid_x = pid_Increment_template_t<float, float>({0.3, 1, 0.2, -0.4, 0.4});
     pid_Increment_template_t<float, float> pid_y = pid_Increment_template_t<float, float>({0.3, 1, 0.2, -0.4, 0.4});
-    pid_Increment_template_t<float, float> pid_yaw = pid_Increment_template_t<float, float>({0.6, 2, 0.2, -0.6, 0.6});
+    pid_Increment_template_t<float, float> pid_yaw = pid_Increment_template_t<float, float>({0.3, 1.2, 0.10, -0.6, 0.6});
 };
 inline StepController_t Controller; // 全局控制器实例
 #endif
